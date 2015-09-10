@@ -15,7 +15,6 @@ from urllib import quote_plus
 from base64 import b64encode
 from cgi import escape
 
-from urlgrabber.keepalive import HTTPHandler
 
 from .utils import (_amz_canonicalize, metadata_headers, rfc822_fmtdate, _iso8601_dt,
                     aws_md5, aws_urlquote, guess_mimetype, info_dict, expire2datetime)
@@ -260,8 +259,7 @@ class S3Bucket(object):
 
     @classmethod
     def build_opener(cls):
-        keepalive_handler = HTTPHandler()
-        return urllib2.build_opener(keepalive_handler)
+        return urllib2.build_opener(StreamHTTPHandler, StreamHTTPSHandler)
 
     def request(self, *a, **k):
         k.setdefault("bucket", self.name)
